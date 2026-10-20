@@ -77,11 +77,12 @@ export const submitContactForm = async (data: ContactFormData): Promise<SubmitRe
       status: 'Nuevo',
     };
 
-    const { data: inserted, error } = await supabase
+    // Generar código de seguimiento amigable para el cliente
+    const referenceCode = 'NX-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+
+    const { error } = await supabase
       .from('contact_messages')
-      .insert([payload])
-      .select('id')
-      .single();
+      .insert([payload]);
 
     if (error) {
       console.error('Error al registrar mensaje en Supabase:', error);
@@ -93,7 +94,7 @@ export const submitContactForm = async (data: ContactFormData): Promise<SubmitRe
 
     return {
       success: true,
-      messageId: inserted?.id,
+      messageId: referenceCode,
     };
   } catch (err: unknown) {
     console.error('Error inesperado de conexión:', err);
